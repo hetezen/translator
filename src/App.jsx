@@ -1,33 +1,34 @@
 import React, { useState } from 'react';
 
 // DeepL supported languages with their codes and speech synthesis language codes
+// Ordered: English first, then Spanish, Chinese, German, Russian, then others alphabetically
 const availableLanguages = [
   { code: "EN", sourceCode: "EN", name: "English", flag: "🇬🇧", color: "#1e40af", speechCode: "en-GB" },
   { code: "EN-US", sourceCode: "EN", name: "English (US)", flag: "🇺🇸", color: "#1e40af", speechCode: "en-US" },
   { code: "ES", sourceCode: "ES", name: "Spanish", flag: "🇪🇸", color: "#dc2626", speechCode: "es-ES" },
+  { code: "ZH-HANS", sourceCode: "ZH", name: "Chinese (Simplified)", flag: "🇨🇳", color: "#ea580c", speechCode: "zh-CN" },
   { code: "DE", sourceCode: "DE", name: "German", flag: "🇩🇪", color: "#1d4ed8", speechCode: "de-DE" },
   { code: "RU", sourceCode: "RU", name: "Russian", flag: "🇷🇺", color: "#16a34a", speechCode: "ru-RU" },
+  { code: "AR", sourceCode: "AR", name: "Arabic", flag: "🇸🇦", color: "#15803d", speechCode: "ar-SA" },
+  { code: "CS", sourceCode: "CS", name: "Czech", flag: "🇨🇿", color: "#1e40af", speechCode: "cs-CZ" },
+  { code: "DA", sourceCode: "DA", name: "Danish", flag: "🇩🇰", color: "#dc2626", speechCode: "da-DK" },
+  { code: "NL", sourceCode: "NL", name: "Dutch", flag: "🇳🇱", color: "#f97316", speechCode: "nl-NL" },
+  { code: "FI", sourceCode: "FI", name: "Finnish", flag: "🇫🇮", color: "#1d4ed8", speechCode: "fi-FI" },
   { code: "FR", sourceCode: "FR", name: "French", flag: "🇫🇷", color: "#7c3aed", speechCode: "fr-FR" },
+  { code: "EL", sourceCode: "EL", name: "Greek", flag: "🇬🇷", color: "#1e40af", speechCode: "el-GR" },
+  { code: "HU", sourceCode: "HU", name: "Hungarian", flag: "🇭🇺", color: "#16a34a", speechCode: "hu-HU" },
+  { code: "ID", sourceCode: "ID", name: "Indonesian", flag: "🇮🇩", color: "#dc2626", speechCode: "id-ID" },
   { code: "IT", sourceCode: "IT", name: "Italian", flag: "🇮🇹", color: "#059669", speechCode: "it-IT" },
+  { code: "JA", sourceCode: "JA", name: "Japanese", flag: "🇯🇵", color: "#e11d48", speechCode: "ja-JP" },
+  { code: "KO", sourceCode: "KO", name: "Korean", flag: "🇰🇷", color: "#4f46e5", speechCode: "ko-KR" },
+  { code: "NB", sourceCode: "NB", name: "Norwegian", flag: "🇳🇴", color: "#dc2626", speechCode: "nb-NO" },
+  { code: "PL", sourceCode: "PL", name: "Polish", flag: "🇵🇱", color: "#dc2626", speechCode: "pl-PL" },
   { code: "PT-PT", sourceCode: "PT", name: "Portuguese", flag: "🇵🇹", color: "#0891b2", speechCode: "pt-PT" },
   { code: "PT-BR", sourceCode: "PT", name: "Portuguese (Brazil)", flag: "🇧🇷", color: "#15803d", speechCode: "pt-BR" },
-  { code: "JA", sourceCode: "JA", name: "Japanese", flag: "🇯🇵", color: "#e11d48", speechCode: "ja-JP" },
-  { code: "ZH-HANS", sourceCode: "ZH", name: "Chinese (Simplified)", flag: "🇨🇳", color: "#ea580c", speechCode: "zh-CN" },
-  { code: "KO", sourceCode: "KO", name: "Korean", flag: "🇰🇷", color: "#4f46e5", speechCode: "ko-KR" },
-  { code: "AR", sourceCode: "AR", name: "Arabic", flag: "🇸🇦", color: "#15803d", speechCode: "ar-SA" },
-  { code: "NL", sourceCode: "NL", name: "Dutch", flag: "🇳🇱", color: "#f97316", speechCode: "nl-NL" },
-  { code: "SV", sourceCode: "SV", name: "Swedish", flag: "🇸🇪", color: "#0284c7", speechCode: "sv-SE" },
-  { code: "PL", sourceCode: "PL", name: "Polish", flag: "🇵🇱", color: "#dc2626", speechCode: "pl-PL" },
-  { code: "TR", sourceCode: "TR", name: "Turkish", flag: "🇹🇷", color: "#b91c1c", speechCode: "tr-TR" },
-  { code: "EL", sourceCode: "EL", name: "Greek", flag: "🇬🇷", color: "#1e40af", speechCode: "el-GR" },
-  { code: "DA", sourceCode: "DA", name: "Danish", flag: "🇩🇰", color: "#dc2626", speechCode: "da-DK" },
-  { code: "FI", sourceCode: "FI", name: "Finnish", flag: "🇫🇮", color: "#1d4ed8", speechCode: "fi-FI" },
-  { code: "CS", sourceCode: "CS", name: "Czech", flag: "🇨🇿", color: "#1e40af", speechCode: "cs-CZ" },
   { code: "RO", sourceCode: "RO", name: "Romanian", flag: "🇷🇴", color: "#1d4ed8", speechCode: "ro-RO" },
-  { code: "HU", sourceCode: "HU", name: "Hungarian", flag: "🇭🇺", color: "#16a34a", speechCode: "hu-HU" },
+  { code: "SV", sourceCode: "SV", name: "Swedish", flag: "🇸🇪", color: "#0284c7", speechCode: "sv-SE" },
+  { code: "TR", sourceCode: "TR", name: "Turkish", flag: "🇹🇷", color: "#b91c1c", speechCode: "tr-TR" },
   { code: "UK", sourceCode: "UK", name: "Ukrainian", flag: "🇺🇦", color: "#0284c7", speechCode: "uk-UA" },
-  { code: "ID", sourceCode: "ID", name: "Indonesian", flag: "🇮🇩", color: "#dc2626", speechCode: "id-ID" },
-  { code: "NB", sourceCode: "NB", name: "Norwegian", flag: "🇳🇴", color: "#dc2626", speechCode: "nb-NO" },
 ];
 
 export default function MultiTranslator() {
@@ -256,22 +257,26 @@ export default function MultiTranslator() {
 
         {/* Source Language Selector */}
         <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-4">
-          <h3 className="font-semibold text-slate-700 mb-3">Translate from:</h3>
-          <div className="flex flex-wrap gap-2">
-            {availableLanguages.map(lang => (
-              <button
-                key={lang.code}
-                onClick={() => saveSourceLanguage(lang.code)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-                  sourceLanguage === lang.code
-                    ? 'bg-indigo-100 border-2 border-indigo-500 text-indigo-700'
-                    : 'bg-slate-50 border-2 border-slate-200 hover:border-slate-300'
-                }`}
+          <div className="flex items-center gap-4">
+            <h3 className="font-semibold text-slate-700">Translate from:</h3>
+            <div className="relative flex-1 max-w-xs">
+              <select
+                value={sourceLanguage}
+                onChange={(e) => saveSourceLanguage(e.target.value)}
+                className="w-full appearance-none px-4 py-3 pr-10 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-colors text-slate-700 font-medium cursor-pointer"
               >
-                <span>{lang.flag}</span>
-                <span className="text-sm font-medium">{lang.name}</span>
-              </button>
-            ))}
+                {availableLanguages.map(lang => (
+                  <option key={lang.code} value={lang.code}>
+                    {lang.flag} {lang.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
 
