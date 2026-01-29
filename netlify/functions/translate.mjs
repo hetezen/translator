@@ -17,9 +17,9 @@ export default async (req, context) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `DeepL-Auth-Key ${apiKey}`,
       },
       body: new URLSearchParams({
-        auth_key: apiKey,
         text: text,
         source_lang: sourceLang || 'EN',
         target_lang: targetLang,
